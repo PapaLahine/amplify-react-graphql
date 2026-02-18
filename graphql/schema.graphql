@@ -1,0 +1,164 @@
+enum Role {
+  AGENT
+  SUPERVISEUR
+  DIRECTION
+  ADMIN_SYSTEME
+}
+
+enum IncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum PatrolStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  MISSED
+}
+
+type User {
+  id: ID!
+  email: AWSEmail!
+  fullName: String!
+  role: Role!
+  phone: AWSPhone
+  isActive: Boolean!
+  supervisorId: ID
+  assignedSiteIds: [ID!]!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Site {
+  id: ID!
+  name: String!
+  address: String
+  city: String
+  country: String
+  isActive: Boolean!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Checkpoint {
+  id: ID!
+  siteId: ID!
+  name: String!
+  code: String
+  latitude: Float
+  longitude: Float
+  isActive: Boolean!
+}
+
+type PatrolTemplate {
+  id: ID!
+  siteId: ID!
+  name: String!
+  checkpointIds: [ID!]!
+  expectedDurationMin: Int
+  isActive: Boolean!
+}
+
+type Patrol {
+  id: ID!
+  siteId: ID!
+  templateId: ID
+  agentId: ID!
+  supervisorId: ID!
+  plannedStartAt: AWSDateTime!
+  plannedEndAt: AWSDateTime!
+  startedAt: AWSDateTime
+  endedAt: AWSDateTime
+  status: PatrolStatus!
+  notes: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type CheckpointLog {
+  id: ID!
+  patrolId: ID!
+  checkpointId: ID!
+  userId: ID!
+  timestamp: AWSDateTime!
+  method: String
+  latitude: Float
+  longitude: Float
+  comment: String
+}
+
+type Incident {
+  id: ID!
+  siteId: ID!
+  patrolId: ID
+  reportedBy: ID!
+  assignedTo: ID
+  title: String!
+  description: String!
+  severity: IncidentSeverity!
+  status: IncidentStatus!
+  happenedAt: AWSDateTime!
+  resolvedAt: AWSDateTime
+  latitude: Float
+  longitude: Float
+  mediaUrls: [AWSURL!]
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type IncidentTimeline {
+  id: ID!
+  incidentId: ID!
+  actorId: ID!
+  eventType: String!
+  note: String
+  createdAt: AWSDateTime!
+}
+
+type Alert {
+  id: ID!
+  siteId: ID
+  incidentId: ID
+  patrolId: ID
+  level: IncidentSeverity!
+  channel: String!
+  message: String!
+  sentAt: AWSDateTime
+  acknowledgedBy: ID
+  acknowledgedAt: AWSDateTime
+}
+
+type Query {
+  getDashboardGlobal(from: AWSDateTime, to: AWSDateTime): String
+  listPatrolsBySite(siteId: ID!, status: PatrolStatus): [Patrol!]!
+  listIncidentsBySite(siteId: ID!, status: IncidentStatus): [Incident!]!
+}
+
+type Mutation {
+  startPatrol(patrolId: ID!): Patrol
+  completePatrol(patrolId: ID!, notes: String): Patrol
+  logCheckpoint(patrolId: ID!, checkpointId: ID!, method: String): CheckpointLog
+  reportIncident(
+    siteId: ID!
+    title: String!
+    description: String!
+    severity: IncidentSeverity!
+    patrolId: ID
+  ): Incident
+  updateIncidentStatus(incidentId: ID!, status: IncidentStatus!, note: String): Incident
+}
+
+type Subscription {
+  onIncidentCreated(siteId: ID): Incident
+  onPatrolStatusChanged(siteId: ID): Patrol
+}

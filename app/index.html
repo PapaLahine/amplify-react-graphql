@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpsGuard - Plateforme Sécurité</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>OpsGuard</h1>
+      <p>Plateforme opérationnelle de sécurité</p>
+    </header>
+
+    <main class="layout">
+      <aside class="panel">
+        <h2>Agent: Pointage rapide</h2>
+        <form id="clock-form">
+          <label>
+            Agent
+            <input id="agent-name" placeholder="Nom de l'agent" required />
+          </label>
+          <label>
+            Site
+            <input id="site-name" placeholder="Nom du site" required />
+          </label>
+          <label>
+            Type de pointage
+            <select id="clock-type">
+              <option value="CHECK_IN">Prise de poste</option>
+              <option value="CHECKPOINT">Checkpoint</option>
+              <option value="CHECK_OUT">Fin de poste</option>
+            </select>
+          </label>
+          <button type="submit">Enregistrer le pointage</button>
+        </form>
+      </aside>
+
+      <section class="panel">
+        <h2>Signalement d'incident</h2>
+        <form id="incident-form">
+          <label>
+            Titre
+            <input id="incident-title" required placeholder="Ex: Intrusion portail nord" />
+          </label>
+          <label>
+            Gravité
+            <select id="incident-severity">
+              <option>LOW</option>
+              <option>MEDIUM</option>
+              <option>HIGH</option>
+              <option>CRITICAL</option>
+            </select>
+          </label>
+          <label>
+            Description
+            <textarea id="incident-description" required rows="3"></textarea>
+          </label>
+          <button type="submit">Déclarer l'incident</button>
+        </form>
+      </section>
+
+      <section class="panel dashboard">
+        <h2>Dashboard Supervision / Direction</h2>
+        <div class="kpis">
+          <article>
+            <h3 id="kpi-clockings">0</h3>
+            <p>Pointages du jour</p>
+          </article>
+          <article>
+            <h3 id="kpi-open-incidents">0</h3>
+            <p>Incidents ouverts</p>
+          </article>
+          <article>
+            <h3 id="kpi-critical">0</h3>
+            <p>Incidents critiques</p>
+          </article>
+          <article>
+            <h3 id="kpi-sites">0</h3>
+            <p>Sites actifs</p>
+          </article>
+        </div>
+
+        <div class="lists">
+          <div>
+            <h3>Rondes / pointages récents</h3>
+            <ul id="clockings-list"></ul>
+          </div>
+          <div>
+            <h3>Incidents en cours</h3>
+            <ul id="incidents-list"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>OpsGuard • Traçabilité • Alertes & Notifications • Administration système</p>
+    </footer>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
